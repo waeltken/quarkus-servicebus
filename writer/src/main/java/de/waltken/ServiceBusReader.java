@@ -8,6 +8,7 @@ import com.azure.messaging.servicebus.*;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 import io.quarkus.logging.Log; 
 
@@ -20,7 +21,8 @@ public class ServiceBusReader {
 	private ServiceBusProcessorClient processorClient;
 
 	public void onStart(@Observes StartupEvent event) {
-		startClient();
+		if (Optional.ofNullable(System.getenv("READ_AZURE_SERVICEBUS")).isPresent())
+			startClient();
 	}
 
 	public void onStop(@Observes ShutdownEvent event) {
