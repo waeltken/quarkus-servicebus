@@ -6,9 +6,10 @@ import com.azure.messaging.servicebus.ServiceBusClientBuilder;
 import com.azure.messaging.servicebus.ServiceBusReceiverClient;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
 
+import io.quarkus.runtime.ShutdownEvent;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
 
-@ApplicationScoped
 public class ServiceBusConfig {
 
 	private final String queueName = "messages";
@@ -17,7 +18,6 @@ public class ServiceBusConfig {
 	private final ServiceBusClientBuilder builder;
 
 	private final ServiceBusSenderClient sender;
-	private final ServiceBusReceiverClient receiver;
 
 	public ServiceBusConfig() {
 		DefaultAzureCredential credential = new DefaultAzureCredentialBuilder()
@@ -28,7 +28,11 @@ public class ServiceBusConfig {
 				.credential(credential);
 
 		sender = builder.sender().queueName(queueName).buildClient();
-		receiver = builder.receiver().queueName(queueName).buildClient();
+	}
+	
+	@ApplicationScoped
+	public ServiceBusClientBuilder builder() {
+		return builder;
 	}
 
 	@ApplicationScoped
@@ -36,8 +40,7 @@ public class ServiceBusConfig {
 		return sender;
 	}
 
-	@ApplicationScoped
-	public ServiceBusReceiverClient receiver() {
-		return receiver;
+	void onStop(@Observes ShutdownEvent ev) {
+		sender.close();
 	}
 }
