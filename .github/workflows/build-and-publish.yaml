@@ -39,4 +39,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Quarkus Build
-        run: quarkus image build
+        run: quarkus image build --registry ghcr.io --group waeltken --name quarkus-servicebus/sample --tag latest
+
+      - name: Push image to registry
+        run: quarkus image push --registry ghcr.io --group waeltken --name quarkus-servicebus/sample --tag latest
