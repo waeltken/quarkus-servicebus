@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  packages: write
+  
 jobs:
   build_and_publish:
     name: Build and publish to GitHub Packages
