@@ -9,7 +9,7 @@ import jakarta.ws.rs.Produces;
 
 import com.azure.messaging.servicebus.*;
 
-@Path("/")
+@Path("/inject")
 public class ServiceBusWriter {
 	
 	@Inject

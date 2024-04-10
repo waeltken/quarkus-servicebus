@@ -1,9 +1,12 @@
 package de.waltken;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
-import com.azure.messaging.servicebus.*;
+import com.azure.messaging.servicebus.ServiceBusClientBuilder;
+import com.azure.messaging.servicebus.ServiceBusProcessorClient;
+import com.azure.messaging.servicebus.ServiceBusReceivedMessageContext;
+import com.azure.messaging.servicebus.ServiceBusReceivedMessage;
+import com.azure.messaging.servicebus.ServiceBusErrorContext;
 
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
@@ -12,7 +15,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import io.quarkus.logging.Log; 
 
-@ApplicationScoped
 public class ServiceBusReader {
 	private final String queueName = "messages";
 
@@ -61,8 +63,8 @@ public class ServiceBusReader {
 		} catch (InterruptedException e) {
 			context.abandon();
 			e.printStackTrace();
+      throw new RuntimeException(e);
 		}
-		context.complete();
     Log.info("Completed!");
 	}
 
